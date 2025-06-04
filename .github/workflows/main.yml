@@ -1,0 +1,2 @@
+- name: Component Detection dependency submission action
+  uses: advanced-security/component-detection-dependency-submission-action@v0.0.6
