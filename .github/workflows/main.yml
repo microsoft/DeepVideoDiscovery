@@ -1,20 +1,38 @@
-            - name: Component Detection dependency submission action
-  # You may pin to the exact commit or the version.
-  # uses: advanced-security/component-detection-dependency-submission-action@1874d0f72d77ddf201936b16a90f28b237709753
-  uses: advanced-security/component-detection-dependency-submission-action@v0.0.6
-  with:
-    # GitHub Personal Access Token (PAT). Defaults to PAT provided by Actions runner.
-    token: # optional, default is ${{ github.token }}
-    # The path to the directory containing the environment files to upload. Defaults to Actions working directory.
-    filePath: # optional, default is .
-    # Filters out specific directories following a minimatch pattern.
-    directoryExclusionList: # optional
-    # Comma separated list of properties that can affect the detectors execution, like EnableIfDefaultOff that allows a specific detector that is in beta to run, the format for this property is DetectorId=EnableIfDefaultOff, for example Pip=EnableIfDefaultOff.
-    detectorArgs: # optional
-    # Comma separated list of docker image names or hashes to execute container scanning on, ex: ubuntu:16.04,56bab49eef2ef07505f6a1b0d5bd3a601dfc3c76ad4460f24c91d6fa298369ab
-    dockerImagesToScan: # optional
-    # A comma separated list with the identifiers of the specific detectors to be used. This is meant to be used for testing purposes only.
-    detectorsFilter: # optional
-    # An optional identifier to distinguish between multiple dependency snapshots of the same type.
-    correlator: # optional
-          
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+      - name: Component Detection dependency submission action
+        uses: advanced-security/component-detection-dependency-submission-action@v0.0.6
