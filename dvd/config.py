@@ -5,17 +5,17 @@ VIDEO_FPS = 2 # frames per second
 CLIP_SECS = 10 # seconds
 
 # ------------------ model configuration ------------------ #
-AOAI_CAPTION_VLM_ENDPOINT_LIST = ["https://msra-im-openai-se.openai.azure.com", "https://msra-im-openai-fc.openai.azure.com"]
+AOAI_CAPTION_VLM_ENDPOINT_LIST = [""]
 AOAI_CAPTION_VLM_MODEL_NAME = "gpt-4.1-mini"
 
-AOAI_ORCHESTRATOR_LLM_ENDPOINT_LIST = ["https://msra-im-openai-eus2.openai.azure.com"]
+AOAI_ORCHESTRATOR_LLM_ENDPOINT_LIST = [""]
 AOAI_ORCHESTRATOR_LLM_MODEL_NAME = "o3"
 
-AOAI_TOOL_VLM_ENDPOINT_LIST = ["https://msra-im-openai-eus2.openai.azure.com"]
+AOAI_TOOL_VLM_ENDPOINT_LIST = [""]
 AOAI_TOOL_VLM_MODEL_NAME = "gpt-4.1-mini"
 AOAI_TOOL_VLM_MAX_FRAME_NUM = 50
 
-AOAI_EMBEDDING_RESOURCE_LIST = ["https://msra-im-openai-se.openai.azure.com"]
+AOAI_EMBEDDING_RESOURCE_LIST = [""]
 AOAI_EMBEDDING_LARGE_MODEL_NAME = "text-embedding-3-large"
 AOAI_EMBEDDING_LARGE_DIM = 3072
 

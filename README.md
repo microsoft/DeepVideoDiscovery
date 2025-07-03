@@ -8,7 +8,14 @@ This repository contains the official implementation of the paper [Deep Video Di
 
 ## Introduction
 
-**Deep Video Discovery (DVD)** is a research-oriented question answering agent designed for understanding and analyzing long-form videos. Leveraging the powerful capabilities of large language models (LLMs), DVD effectively interprets and processes extensive video content to answer complex user queries.
+**Deep Video Discovery (DVD)** is a deep-research style question answering agent designed for understanding extra-long videos. Leveraging the powerful capabilities of large language models (LLMs), DVD effectively interprets and processes extensive video content to answer complex user queries.
+
+[![demo](demo_.png)](https://youtu.be/_nrzM_Mmtac)
+
+
+
+![radar](./asset/overview.png)
+
 
 The core design of DVD includes:
 
@@ -19,7 +26,8 @@ The core design of DVD includes:
 
 DVD Achieves state-of-the-art performance by a large margin on multiple long video benchmarks using OpenAI o3.
 
-![radar](./asset/overview.png)
+
+
 
 ## Installation
 
