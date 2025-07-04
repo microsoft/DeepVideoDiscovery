@@ -4,7 +4,10 @@
 [![License](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 
 
-This repository contains the official implementation of the paper [Deep Video Discovery: Agentic Search with Tool Use for Long-form Video Understanding](https://arxiv.org/abs/2505.18079).
+This repository contains the official implementation of the paper [Deep Video Discovery: Agentic Search with Tool Use for Long-form Video Understanding](https://arxiv.org/abs/2505.18079), which achieves the state-of-the-art performance by a large margin on multiple long video benchmarks including the challenging [LVBench](https://lvbench.github.io/).
+
+![image](https://github.com/user-attachments/assets/ac1c7f0a-3c10-4c4c-88d1-7bfe0e2010e1)
+
 
 ## Introduction
 
@@ -21,11 +24,10 @@ DVD Achieves state-of-the-art performance by a large margin on multiple long vid
 
 The core design of DVD includes:
 
-- **Treating segmented video clips as exploration environments**
-- **Autonomous planning and reasoning**, dynamically formulating strategies to solve problems efficiently
-- **Selecting appropriate multi-granular tools**, iteratively extracting relevant information from the video environment
-- **Summarizing and reflecting on observations**, to provide comprehensive and accurate answers to user questions
-
+- 🎬 **Treating segmented video clips as exploration environments**
+- 🤖 **Autonomous planning and reasoning**, dynamically formulating strategies to solve problems efficiently
+- 🛠️ **Selecting appropriate multi-granular tools**, iteratively extracting relevant information from the video environment
+- 📝 **Summarizing and reflecting on observations**, to provide comprehensive and accurate answers to user questions
 
 
 
