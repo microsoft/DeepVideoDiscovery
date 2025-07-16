@@ -99,10 +99,51 @@ def load_video(
             )
             shutil.copy2(subtitle_source, subtitle_destination)
 
-        return os.path.abspath(destination_path)
+def download_srt_subtitle(video_url: str, output_path: str):
+    """Downloads an SRT subtitle from a YouTube URL."""
+    if not _is_youtube_url(video_url):
+        raise ValueError("Provided URL is not a valid YouTube link.")
 
-    # ------------------- Not found -------------------
-    raise FileNotFoundError(f"Video source '{video_source}' not found or is not a valid URL.")
+    output_dir = os.path.dirname(output_path)
+    os.makedirs(output_dir, exist_ok=True)
+
+    ydl_opts = {
+        'writesubtitles': True,
+        'subtitleslangs': ['en'],
+        'subtitlesformat': 'srt',
+        'skip_download': True,
+        'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(video_url, download=False)
+        video_id = info['id']
+        ydl.download([video_url])
+
+    # Locate the downloaded subtitle file (yt-dlp names them as <id>.<lang>.srt)
+    downloaded_subtitle_path = None
+    for f in os.listdir(output_dir):
+        if f.startswith(video_id) and f.endswith(".srt"):
+            downloaded_subtitle_path = os.path.join(output_dir, f)
+            break
+
+    if downloaded_subtitle_path:
+        shutil.move(downloaded_subtitle_path, output_path)
+    else:
+        # Try auto-generated subtitles
+        ydl_opts['writeautomaticsub'] = True
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl_auto:
+            ydl_auto.download([video_url])
+        
+        if os.path.exists(os.path.join(output_dir, f"{video_id}.en.vtt")):
+             # yt-dlp might download as .vtt and convert, check for final .srt
+            for f in os.listdir(output_dir):
+                if f.startswith(video_id) and f.endswith('.srt'):
+                    shutil.move(os.path.join(output_dir, f), output_path)
+                    return
+        
+        raise FileNotFoundError(f"Could not find SRT subtitle for {video_url}")
+
 
 def decode_video_to_frames(video_path: str) -> str:
     """

@@ -9,6 +9,12 @@ This repository contains the official implementation of the paper [Deep Video Di
 ![image](https://github.com/user-attachments/assets/ac1c7f0a-3c10-4c4c-88d1-7bfe0e2010e1)
 
 
+## Update
+
+- **2025/07/16**: Add `lite_mode` to enable a lightweight version of the agent that uses only subtitles. Good for Youtube podcast analysis!
+- **2025/07/14**: Support OpenAI API and Azure OpenAI API.
+- **2025/07/08**: Initial release of the Deep Video Discovery codebase.
+
 ## Introduction
 
 **Deep Video Discovery (DVD)** is a deep-research style question answering agent designed for understanding extra-long videos. Leveraging the powerful capabilities of large language models (LLMs), DVD effectively interprets and processes extensive video content to answer complex user queries.

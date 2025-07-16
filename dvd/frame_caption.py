@@ -240,6 +240,8 @@ def _caption_clip(task: Tuple[str, Dict], caption_ckpt_folder) -> Tuple[str, dic
         try:
             assert isinstance(resp, str), f"Response must be a JSON string instead of {type(resp)}:{resp}."
             parsed = json.loads(resp)
+            parsed["clip_description"] += f"\n\nTranscript during this video clip: {transcript}." # add transcript to description
+            resp = json.dumps(parsed)
             with open(os.path.join(caption_ckpt_folder, f"{timestamp}.json"), "w") as f:
                 f.write(resp)
             return timestamp, parsed
@@ -328,6 +330,25 @@ def process_video(
     ) as f:
         json.dump(frame_captions, f, indent=4)
 
+
+def process_video_lite(
+    output_caption_folder: str,
+    subtitle_file_path: str,
+):
+    """
+    Process video in LITE_MODE using SRT subtitles.
+    """
+    captions = parse_srt_to_dict(subtitle_file_path)
+    frame_captions = {}
+    for key, text in captions.items():
+        frame_captions[key] = {
+            "caption": f"\n\nTranscript during this video clip: {text}.",
+        }
+    frame_captions["subject_registry"] = {}
+    with open(
+        os.path.join(output_caption_folder, "captions.json"), "w"
+    ) as f:
+        json.dump(frame_captions, f, indent=4)
 
 # --------------------------------------------------------------------------- #
 #                                    main                                     #

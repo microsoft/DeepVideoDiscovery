@@ -24,6 +24,7 @@ AOAI_EMBEDDING_LARGE_MODEL_NAME = "text-embedding-3-large"
 AOAI_EMBEDDING_LARGE_DIM = 3072
 
 # ------------------ agent and tool setting ------------------ #
+LITE_MODE = True # if True, only leverage srt subtitle, no pixel downloaded or pixel captioning
 GLOBAL_BROWSE_TOPK = 300
 OVERWRITE_CLIP_SEARCH_TOPK = 0 # 0 means no overwrite and let agent decide
 

@@ -26,6 +26,8 @@ def finish(answer: A[str, D("Answer to the user's question.")]) -> None:
 class DVDCoreAgent:
     def __init__(self, video_db_path, video_caption_path, max_iterations):
         self.tools = [frame_inspect_tool, clip_search_tool, global_browse_tool, finish]
+        if config.LITE_MODE:
+            self.tools.remove(frame_inspect_tool)
         self.name_to_function_map = {tool.__name__: tool for tool in self.tools}
         self.function_schemas = [
             {"function": as_json_schema(func), "type": "function"}
