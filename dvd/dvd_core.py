@@ -139,6 +139,7 @@ Question: QUESTION_PLACEHOLDER"""
                 model_name=config.AOAI_ORCHESTRATOR_LLM_MODEL_NAME,
                 tools=self.function_schemas,
                 temperature=0.0,
+                api_key=config.OPENAI_API_KEY,
             )
             if response is None:
                 return None

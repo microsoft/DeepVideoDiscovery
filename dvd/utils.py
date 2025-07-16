@@ -76,6 +76,7 @@ def call_openai_model_with_tools(
     messages,
     endpoints,
     model_name,
+    api_key: str = None,
     tools: list = [],  # List of tool definitions
     image_paths: list = [],  
     max_tokens: int = 4096,  
@@ -83,22 +84,32 @@ def call_openai_model_with_tools(
     tool_choice: str = "auto",  # Can be "auto", "none", or a specific tool
     return_json: bool = False,
 ) -> dict:  
-    credential = AzureCliCredential()  
-    token = credential.get_token('https://cognitiveservices.azure.com/')  
-    headers = {  
-        "Content-Type": "application/json",  
-        'Authorization': 'Bearer ' + token.token  
-    }  
-    if isinstance(endpoints, str):
-        endpoint = endpoints
-    elif isinstance(endpoints, list):
-        endpoint = random.choice(endpoints)
+    if api_key:
+        headers = {  
+            "Content-Type": "application/json",  
+            'Authorization': 'Bearer ' + api_key
+        }
+        endpoint = "https://api.openai.com/v1"
+        url = f"{endpoint}/chat/completions"
     else:
-        raise ValueError("Endpoints must be a string or a list of strings.")  
+        credential = AzureCliCredential()  
+        token = credential.get_token('https://cognitiveservices.azure.com/')  
+        headers = {  
+            "Content-Type": "application/json",  
+            'Authorization': 'Bearer ' + token.token  
+        }  
+        if isinstance(endpoints, str):
+            endpoint = endpoints
+        elif isinstance(endpoints, list):
+            endpoint = random.choice(endpoints)
+        else:
+            raise ValueError("Endpoints must be a string or a list of strings.")
+        url = f"{endpoint}/openai/deployments/{model_name}/chat/completions?api-version=2025-03-01-preview"
+
     model = model_name
-    url = f"{endpoint}/openai/deployments/{model}/chat/completions?api-version=2025-03-01-preview"  
       
     payload = {  
+        "model": model,
         "messages": copy.deepcopy(messages),  
         # "reasoning_effort": reasoning_effort,
     }  
@@ -140,7 +151,7 @@ def call_openai_model_with_tools(
 class AzureOpenAIEmbeddingService:  
     @staticmethod  
     @retry_with_exponential_backoff
-    def get_embeddings(endpoints, model_name, input_text):  
+    def get_embeddings(endpoints, model_name, input_text, api_key: str = None):  
         """  
         Call Azure OpenAI Embedding service and get embeddings for the input text.  
   
@@ -150,27 +161,35 @@ class AzureOpenAIEmbeddingService:
         :param input_text: The text for which you want to generate embeddings.  
         :return: The embeddings as a JSON response.  
         """  
-        if isinstance(endpoints, str):
-            endpoint = endpoints
-        elif isinstance(endpoints, list):
-            endpoint = random.choice(endpoints)
+        if api_key:
+            headers = {  
+                "Content-Type": "application/json",  
+                'Authorization': 'Bearer ' + api_key
+            }
+            endpoint = "https://api.openai.com/v1"
+            url = f"{endpoint}/embeddings"
         else:
-            raise ValueError("Endpoints must be a string or a list of strings.")  
+            if isinstance(endpoints, str):
+                endpoint = endpoints
+            elif isinstance(endpoints, list):
+                endpoint = random.choice(endpoints)
+            else:
+                raise ValueError("Endpoints must be a string or a list of strings.")  
+            # Define the URL for the embeddings endpoint  
+            url = f"{endpoint}/openai/deployments/{model_name}/embeddings?api-version=2023-05-15"  
+    
+            credential = AzureCliCredential()  
+            token = credential.get_token('https://cognitiveservices.azure.com/')  
+            headers = {  
+                "Content-Type": "application/json",  
+                'Authorization': 'Bearer ' + token.token  
+            }
+        
         model = model_name
-        if isinstance(endpoint, list):
-            endpoint = random.choice(endpoint)
-        # Define the URL for the embeddings endpoint  
-        url = f"{endpoint}/openai/deployments/{model}/embeddings?api-version=2023-05-15"  
-  
-        credential = AzureCliCredential()  
-        token = credential.get_token('https://cognitiveservices.azure.com/')  
-        headers = {  
-            "Content-Type": "application/json",  
-            'Authorization': 'Bearer ' + token.token  
-        }    
         # Set up the payload for the request  
         payload = {  
-            "input": input_text  
+            "input": input_text,
+            "model": model
         }  
   
         # Make the request to the Azure OpenAI service  
@@ -217,14 +236,34 @@ def extract_answer(message: dict) -> str | None:
 
 
 if __name__ == "__main__":
-    call_openai_model_with_tools(
-        messages=[{"role": "user", "content": "Hello, how are you?"}],
-        endpoints=["https://msra-im-openai-eus2.openai.azure.com"],
-        model_name="o3",
-        tools=[],
-        image_paths=[],
-        max_tokens=4096,
-        temperature=0.0,
-        tool_choice="auto",
-        return_json=False,
-    )
+    # Example for Azure
+    # call_openai_model_with_tools(
+    #     messages=[{"role": "user", "content": "Hello, how are you?"}],
+    #     endpoints=["https://msra-im-openai-eus2.openai.azure.com"],
+    #     model_name="o3",
+    #     tools=[],
+    #     image_paths=[],
+    #     max_tokens=4096,
+    #     temperature=0.0,
+    #     tool_choice="auto",
+    #     return_json=False,
+    # )
+
+    # Example for OpenAI
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if api_key:
+        response = call_openai_model_with_tools(
+            messages=[{"role": "user", "content": "Hello, how are you?"}],
+            endpoints=None, # Not used for OpenAI
+            model_name="gpt-4o",
+            api_key=api_key,
+            tools=[],
+            image_paths=[],
+            max_tokens=4096,
+            temperature=0.0,
+            tool_choice="auto",
+            return_json=False,
+        )
+        print(response)
+    else:
+        print("OPENAI_API_KEY environment variable not set.")

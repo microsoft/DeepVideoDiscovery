@@ -102,6 +102,7 @@ def frame_inspect_tool(
         messages=input_msgs,
         endpoints=config.AOAI_TOOL_VLM_ENDPOINT_LIST,
         model_name=config.AOAI_TOOL_VLM_MODEL_NAME,
+        api_key=config.OPENAI_API_KEY,
         image_paths=files,
         temperature=0,
         max_tokens=512,
@@ -130,6 +131,7 @@ def clip_search_tool(
         endpoints=config.AOAI_EMBEDDING_RESOURCE_LIST,
         model_name=config.AOAI_EMBEDDING_LARGE_MODEL_NAME,
         input_text=[event_description],
+        api_key=config.OPENAI_API_KEY,
     )[0]['embedding']
     results = database.query(
         query_emb,
@@ -164,6 +166,7 @@ def global_browse_tool(
         endpoints=config.AOAI_EMBEDDING_RESOURCE_LIST,
         model_name=config.AOAI_EMBEDDING_LARGE_MODEL_NAME,
         input_text=[query],
+        api_key=config.OPENAI_API_KEY,
     )[0]['embedding']
     results = database.query(
         query_emb,
@@ -202,6 +205,7 @@ def global_browse_tool(
         messages=input_msgs,
         endpoints=config.AOAI_TOOL_VLM_ENDPOINT_LIST,
         model_name=config.AOAI_TOOL_VLM_MODEL_NAME,
+        api_key=config.OPENAI_API_KEY,
         temperature=0,
         max_tokens=512,
     )
@@ -318,6 +322,7 @@ def single_batch_embedding_task(data):
         endpoints=config.AOAI_EMBEDDING_RESOURCE_LIST,
         model_name=config.AOAI_EMBEDDING_LARGE_MODEL_NAME,
         input_text=captions,
+        api_key=config.OPENAI_API_KEY,
     )
     max_tries = 3
     while embs is None or len(embs) != len(captions):
@@ -329,6 +334,7 @@ def single_batch_embedding_task(data):
             endpoints=config.AOAI_EMBEDDING_RESOURCE_LIST,
             model_name=config.AOAI_EMBEDDING_LARGE_MODEL_NAME,
             input_text=captions,
+            api_key=config.OPENAI_API_KEY,
         )
     return list(zip(timestamps, cap_infos, [d['embedding'] for d in embs]))
 

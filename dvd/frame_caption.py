@@ -233,6 +233,7 @@ def _caption_clip(task: Tuple[str, Dict], caption_ckpt_folder) -> Tuple[str, dic
             model_name=config.AOAI_CAPTION_VLM_MODEL_NAME,
             return_json=True,
             image_paths=files,
+            api_key=config.OPENAI_API_KEY,
         )["content"]
         if resp is None:
             continue
@@ -269,6 +270,7 @@ def merge_subject_registries(registries: List[dict]) -> dict:
             endpoints=config.AOAI_CAPTION_VLM_ENDPOINT_LIST,
             model_name=config.AOAI_CAPTION_VLM_MODEL_NAME,
             return_json=True,
+            api_key=config.OPENAI_API_KEY,
         )["content"]
         if resp is None:
             continue

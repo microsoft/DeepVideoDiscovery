@@ -59,7 +59,7 @@ The `local_run.py` script provides an example of how to run the Deep Video Disco
 
 ## TODO
 
-- [ ] Support OpenAI API key configuration.
+- [x] Support OpenAI API key configuration.
 - [ ] Implement MCP server.
 - [ ] Release evaluation trajectory data on long video benchmarks.
 
