@@ -158,6 +158,62 @@ Question: QUESTION_PLACEHOLDER"""
 
         return msgs
 
+    # ------------------------------------------------------------------ #
+    # Streaming (generator) loop
+    # ------------------------------------------------------------------ #
+    def stream_run(self, question):
+        """
+        A generator version of `run`.  
+        Yields:
+            dict: every assistant / tool message produced during reasoning.
+        """
+        msgs = copy.deepcopy(self.messages)
+        msgs[-1]["content"] = msgs[-1]["content"].replace("QUESTION_PLACEHOLDER", question)
+
+        for i in range(self.max_iterations):
+            # Force a final `finish` on the last iteration
+            if i == self.max_iterations - 1:
+                final_usr_msg = {
+                    "role": "user",
+                    "content": "Please call the `finish` function to finish the task.",
+                }
+                msgs.append(final_usr_msg)
+                # Don't yield user messages to the UI
+
+            response = call_openai_model_with_tools(
+                msgs,
+                endpoints=config.AOAI_ORCHESTRATOR_LLM_ENDPOINT_LIST,
+                model_name=config.AOAI_ORCHESTRATOR_LLM_MODEL_NAME,
+                tools=self.function_schemas,
+                temperature=0.0,
+                api_key=config.OPENAI_API_KEY,
+            )
+            if response is None:
+                return
+
+            response.setdefault("role", "assistant")
+            msgs.append(response)
+            yield response  # ← stream assistant reply
+
+            # Execute any requested tool calls
+            try:
+                for tool_call in response.get("tool_calls", []):
+                    # Yield a formatted message about the tool being called
+                    tool_name = tool_call.get("function", {}).get("name", "unknown")
+                    tool_args = tool_call.get("function", {}).get("arguments", "{}")
+                    yield {
+                        "role": "tool_call",
+                        "name": tool_name,
+                        "arguments": tool_args
+                    }
+                    
+                    self._exec_tool(tool_call, msgs)
+                    # Only yield the tool result message
+                    if msgs[-1].get("role") == "tool":
+                        yield msgs[-1]  # ← stream tool observation
+            except StopException:
+                return
+
 
 def single_run_wrapper(info) -> dict:
     qid, video_db_path, video_caption_path, question = info

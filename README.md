@@ -2,6 +2,7 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2504.16082-A42C25?style=flat&logo=arXiv&logoColor=A42C25)](https://arxiv.org/abs/2505.18079)
 [![License](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
+[![Hugging Face Spaces](https://img.shields.io/badge/Spaces-Demo-blueviolet?logo=huggingface&logoColor=white)](TODO)
 
 
 This repository contains the official implementation of the paper [Deep Video Discovery: Agentic Search with Tool Use for Long-form Video Understanding](https://arxiv.org/abs/2505.18079), which achieves the state-of-the-art performance by a large margin on multiple long video benchmarks including the challenging [LVBench](https://lvbench.github.io/).
@@ -11,6 +12,7 @@ This repository contains the official implementation of the paper [Deep Video Di
 
 ## Update
 
+- **2025/07/17**: Add gradio demo.
 - **2025/07/16**: Add `lite_mode` to enable a lightweight version of the agent that uses only subtitles. Good for Youtube podcast analysis!
 - **2025/07/14**: Support OpenAI API and Azure OpenAI API.
 - **2025/07/08**: Initial release of the Deep Video Discovery codebase.

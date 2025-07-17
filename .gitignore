@@ -1,6 +1,7 @@
 tmp/
 video_database/
 .git.bak/
+.gradio/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
