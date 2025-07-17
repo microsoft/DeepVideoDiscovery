@@ -42,6 +42,9 @@ def _prepare_video_assets(video_url: str):
     captions_dir = os.path.join(config.VIDEO_DATABASE_FOLDER, video_id, "captions")
     video_db_path= os.path.join(config.VIDEO_DATABASE_FOLDER, video_id, "database.json")
     srt_path     = os.path.join(config.VIDEO_DATABASE_FOLDER, video_id, "subtitles.srt")
+    os.makedirs(os.path.join(config.VIDEO_DATABASE_FOLDER, "raw"), exist_ok=True)
+    os.makedirs(frames_dir, exist_ok=True)
+    os.makedirs(captions_dir, exist_ok=True)
 
     if config.LITE_MODE:
         if not os.path.exists(srt_path):
@@ -126,7 +129,7 @@ def solve(video_url: str, question: str):
         
         # Add final answer if found
         if final_answer:
-            accumulated_text += f"### ✅📃 **Final Answer:**\n\n{final_answer}"
+            accumulated_text += f"\n### 📃✅ **Final Answer:**\n\n{final_answer}"
         else:
             accumulated_text += "\n\n---\n### ✅ **Analysis Complete!**"
             
