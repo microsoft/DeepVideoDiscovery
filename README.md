@@ -53,6 +53,11 @@ The core design of DVD includes:
    pip install -r requirements.txt
    ```
 
+3. (Optional) **Install gradio for demo:**
+   ```bash
+   pip install gradio
+   ```
+
 ## Usage
 
 Note: Set up your configuration by updating the variables in  `config.py`.
