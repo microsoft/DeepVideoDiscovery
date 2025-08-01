@@ -12,6 +12,7 @@ This repository contains the official implementation of the paper [Deep Video Di
 
 ## Update
 
+- **2025/08/02**: Support auto subtitle in the demo.
 - **2025/07/17**: Add gradio demo.
 - **2025/07/16**: Add `lite_mode` to enable a lightweight version of the agent that uses only subtitles. Good for Youtube podcast analysis!
 - **2025/07/14**: Support OpenAI API and Azure OpenAI API.
