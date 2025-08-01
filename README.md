@@ -2,7 +2,7 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2504.16082-A42C25?style=flat&logo=arXiv&logoColor=A42C25)](https://arxiv.org/abs/2505.18079)
 [![License](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
-[![Hugging Face Spaces](https://img.shields.io/badge/Spaces-Demo-blueviolet?logo=huggingface&logoColor=white)](https://71d30852e95c6c7dd9.gradio.live)
+[![Hugging Face Spaces](https://img.shields.io/badge/Spaces-Demo-blueviolet?logo=huggingface&logoColor=white)](https://87fc7dc81d4b38ed01.gradio.live)
 
 
 This repository contains the official implementation of the paper [Deep Video Discovery: Agentic Search with Tool Use for Long-form Video Understanding](https://arxiv.org/abs/2505.18079), which achieves the state-of-the-art performance by a large margin on multiple long video benchmarks including the challenging [LVBench](https://lvbench.github.io/).

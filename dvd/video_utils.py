@@ -109,9 +109,9 @@ def download_srt_subtitle(video_url: str, output_path: str):
 
     ydl_opts = {
         'writesubtitles': True,
-        'subtitleslangs': ['en'],
         'subtitlesformat': 'srt',
         'skip_download': True,
+        'writeautomaticsub': True,
         'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
     }
 
@@ -130,18 +130,6 @@ def download_srt_subtitle(video_url: str, output_path: str):
     if downloaded_subtitle_path:
         shutil.move(downloaded_subtitle_path, output_path)
     else:
-        # Try auto-generated subtitles
-        ydl_opts['writeautomaticsub'] = True
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl_auto:
-            ydl_auto.download([video_url])
-        
-        if os.path.exists(os.path.join(output_dir, f"{video_id}.en.vtt")):
-             # yt-dlp might download as .vtt and convert, check for final .srt
-            for f in os.listdir(output_dir):
-                if f.startswith(video_id) and f.endswith('.srt'):
-                    shutil.move(os.path.join(output_dir, f), output_path)
-                    return
-        
         raise FileNotFoundError(f"Could not find SRT subtitle for {video_url}")
 
 
@@ -192,4 +180,4 @@ def decode_video_to_frames(video_path: str) -> str:
     return os.path.abspath(frames_dir)
 
 if __name__ == "__main__":
-    decode_video_to_frames("/home/xiaoyizhang/DVD/video_database/raw/i2qSxMVeVLI.mp4")
+    download_srt_subtitle("https://www.youtube.com/watch?v=PQFQ-3d2J-8", "./video_database/PQFQ-3d2J-8/subtitles.srt")
