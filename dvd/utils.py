@@ -222,16 +222,17 @@ def extract_answer(message: dict) -> str | None:
     str | None
         The extracted answer, or ``None`` if no answer could be found.
     """
-    # Direct text response
-    if (content := message.get("content")):
-        return content.strip()
-
     # Tool-based response
     for call in message.get("tool_calls", []):
         args_json = call["function"]["arguments"]
         args = json.loads(args_json)
         if (answer := args.get("answer")):
             return answer
+
+    # Direct text response
+    if (content := message.get("content")):
+        return content.strip()
+    
     return None
 
 

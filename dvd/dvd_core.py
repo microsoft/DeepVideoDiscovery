@@ -9,6 +9,7 @@ from dvd.build_database import (clip_search_tool, frame_inspect_tool,
 from dvd.func_call_shema import as_json_schema
 from dvd.func_call_shema import doc as D
 from dvd.utils import call_openai_model_with_tools
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 TOPK = 16
 
@@ -157,6 +158,26 @@ Question: QUESTION_PLACEHOLDER"""
                 return msgs
 
         return msgs
+
+    def parallel_run(self, questions, max_workers=4) -> list[list[dict]]:
+        """
+        Run multiple questions in parallel.
+        """
+        results = []
+        results = [None] * len(questions)
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_to_index = {
+                executor.submit(self.run, q): idx
+                for idx, q in enumerate(questions)
+            }
+            for future in as_completed(future_to_index):
+                idx = future_to_index[future]
+                try:
+                    results[idx] = future.result()
+                except Exception as e:
+                    print(f"Error processing question: {e}")
+                    results[idx] = None
+        return results
 
     # ------------------------------------------------------------------ #
     # Streaming (generator) loop
