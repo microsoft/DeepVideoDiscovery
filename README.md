@@ -12,7 +12,7 @@ This repository contains the official implementation of the paper [Deep Video Di
 
 ## Update
 
-- **2025/10/15**: Add a markdown to help to reproduce the LVBench results: [REPRODUCE.md](reproduce/REPRODUCE.md). Email me (xiaoyizhang@microsoft) if your issue get no response in 24 hours.
+- **2025/10/15**: Add a markdown to help to reproduce the LVBench results: [REPRODUCE.md](reproduce/README.md). Email me (xiaoyizhang [/at/] microsoft.com) if your issue gets no response in 24 hours.
 - **2025/09/19**: Accepted by NeurIPS 2025 🎉
 - **2025/08/04**: Upload captions on benchmarks for reproduction: [LVBench](https://1drv.ms/u/c/f029f6f5a52c17c4/ETR7ogx7YCtBgtDu66a4R14B7RKLZJoz20D4Z5I1KD6HTg?e=404kKg), [LVBench w/ transcripts](https://1drv.ms/u/c/f029f6f5a52c17c4/EcqO2lC_hRxGn-0t0IBNKZcBts3HDCEg8mZo4ltN6kXFUQ?e=XmabUn), [Video-MME](https://1drv.ms/u/c/f029f6f5a52c17c4/EVKjXQnPjeZGi-onOxEMb8UBxqI9NexKzccHuYEe8-0Lig?e=a4SxCU), [LongVideoBench](https://1drv.ms/u/c/f029f6f5a52c17c4/EQp_PABeb3ZIiysjIn-_5gEBbkhtfcBwCM1pel9xl3JHPg?e=TLpQXQ) and [EgoSchema](https://1drv.ms/u/c/f029f6f5a52c17c4/Ec0oEX3tO5pIknRdEqT9LDQB0hbS9vR9fUJaVbRfCQPJKg?e=bszgh6).
 - **2025/08/02**: Support auto subtitle in the demo.
