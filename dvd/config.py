@@ -23,6 +23,17 @@ AOAI_EMBEDDING_RESOURCE_LIST = [""]
 AOAI_EMBEDDING_LARGE_MODEL_NAME = "text-embedding-3-large"
 AOAI_EMBEDDING_LARGE_DIM = 3072
 
+# ------------------ TwelveLabs Pegasus (optional, opt-in) ------------------ #
+# Pegasus is a native long-video understanding model. When enabled, it adds an
+# extra `pegasus_video_qa_tool` to the agent that answers questions about a time
+# range by analyzing the actual video pixels server-side (no frame extraction),
+# complementing the frame-sampling `frame_inspect_tool`. Disabled by default so
+# existing behavior is unchanged.
+USE_TWELVELABS_PEGASUS = bool(os.environ.get("TWELVELABS_API_KEY"))  # auto-on if a key is present
+TWELVELABS_API_KEY = os.environ.get("TWELVELABS_API_KEY", None)
+TWELVELABS_PEGASUS_MODEL_NAME = "pegasus1.5"
+TWELVELABS_PEGASUS_MAX_TOKENS = 2048
+
 # ------------------ agent and tool setting ------------------ #
 LITE_MODE = True # if True, only leverage srt subtitle, no pixel downloaded or pixel captioning
 GLOBAL_BROWSE_TOPK = 300
