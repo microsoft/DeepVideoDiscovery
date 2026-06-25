@@ -9,7 +9,8 @@ from tqdm import tqdm
 
 import dvd.config as config
 from dvd.func_call_shema import doc as D
-from dvd.utils import AzureOpenAIEmbeddingService, call_openai_model_with_tools
+from dvd.utils import (AzureOpenAIEmbeddingService,
+                       TwelveLabsPegasusService, call_openai_model_with_tools)
 
 
 def frame_inspect_tool(
@@ -110,6 +111,63 @@ def frame_inspect_tool(
     if msgs is None:
         raise ValueError("No response from the model")
     return msgs["content"]
+
+def pegasus_video_qa_tool(
+    database: A[NanoVectorDB, D("The database containing video metadata. Must be an instance of NanoVectorDB.")],
+    question: A[str, D("The detailed question to ask about the video content during the specified time ranges. No need to add time ranges in the question.")],
+    time_ranges_hhmmss: A[list[tuple], D("A list of (start, end) tuples in HH:MM:SS format. The widest range is sent to the model; pass the whole video as a single range for a global understanding.")],
+) -> str:
+    """
+    Ask the TwelveLabs Pegasus long-video understanding model a question about the
+    actual video pixels within the given time ranges. Unlike `frame_inspect_tool`,
+    which samples a few still frames, Pegasus natively analyzes the video segment
+    (motion, sequence of events, fine detail) server-side and returns a textual
+    answer. Use it when frame sampling is insufficient (e.g. questions about
+    motion, ordering of events, or content between sampled frames).
+
+    Returns:
+        str: Pegasus's answer to the question for the requested time range.
+    """
+    assert isinstance(database, NanoVectorDB), "Database must be an instance of NanoVectorDB"
+    if not config.TWELVELABS_API_KEY:
+        return "Error: TwelveLabs Pegasus is not configured (TWELVELABS_API_KEY is unset)."
+
+    video_meta = database.get_additional_data()
+    video_length_secs = convert_hhmmss_to_seconds(video_meta['video_length'])
+
+    # The raw video is stored at {VIDEO_DATABASE_FOLDER}/raw/{video_id}.mp4 where
+    # video_id is the basename of video_file_root (see video_utils.load_video).
+    video_id = os.path.basename(video_meta['video_file_root'])
+    video_path = os.path.join(config.VIDEO_DATABASE_FOLDER, "raw", f"{video_id}.mp4")
+    if not os.path.isfile(video_path):
+        return (f"Error: raw video file not found at {video_path}. "
+                "pegasus_video_qa_tool requires the downloaded video (non-LITE mode).")
+
+    # Clamp the requested ranges to the video length and take the widest span.
+    spans = []
+    for time_range in time_ranges_hhmmss:
+        start_secs = max(convert_hhmmss_to_seconds(time_range[0]), 0)
+        end_secs = min(convert_hhmmss_to_seconds(time_range[1]), video_length_secs)
+        if end_secs > start_secs:
+            spans.append((start_secs, end_secs))
+    if not spans:
+        return "Error: Cannot find corresponding result in the given time range."
+    start_time = min(s for s, _ in spans)
+    end_time = max(e for _, e in spans)
+
+    answer = TwelveLabsPegasusService.analyze_video_file(
+        video_path=video_path,
+        prompt=question,
+        api_key=config.TWELVELABS_API_KEY,
+        model_name=config.TWELVELABS_PEGASUS_MODEL_NAME,
+        max_tokens=config.TWELVELABS_PEGASUS_MAX_TOKENS,
+        start_time=start_time,
+        end_time=end_time,
+    )
+    if answer is None:
+        return "Error: Cannot find corresponding result in the given time range."
+    return answer
+
 
 def clip_search_tool(
         database: A[NanoVectorDB, D("The database object that supports querying with embeddings.")],

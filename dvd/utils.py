@@ -201,6 +201,59 @@ class AzureOpenAIEmbeddingService:
         else:  
             response.raise_for_status()
 
+class TwelveLabsPegasusService:
+    """Thin wrapper around the TwelveLabs Pegasus video-understanding model.
+
+    Pegasus analyzes the actual video pixels server-side (up to 1 hour, no local
+    frame extraction) and answers a natural-language prompt about it. Optionally
+    restricted to a [start_time, end_time] window so it can answer questions about
+    a specific portion of a long video.
+    """
+
+    @staticmethod
+    @retry_with_exponential_backoff
+    def analyze_video_file(
+        video_path: str,
+        prompt: str,
+        api_key: str,
+        model_name: str = "pegasus1.5",
+        max_tokens: int = 2048,
+        start_time: float = None,
+        end_time: float = None,
+    ) -> str:
+        """Upload a local video file as a TwelveLabs asset and ask Pegasus `prompt`.
+
+        :param video_path: Path to a local video file.
+        :param prompt: The question/instruction to answer about the video.
+        :param api_key: TwelveLabs API key.
+        :param model_name: Pegasus model name (e.g. "pegasus1.5").
+        :param max_tokens: Maximum tokens to generate (Pegasus requires >= 512).
+        :param start_time: Optional clip start in seconds.
+        :param end_time: Optional clip end in seconds.
+        :return: The model's textual answer.
+        """
+        # Imported lazily so the SDK is only required when the feature is enabled.
+        from twelvelabs import TwelveLabs
+        from twelvelabs.types.video_context import VideoContext_AssetId
+
+        client = TwelveLabs(api_key=api_key)
+        with open(video_path, "rb") as fh:
+            asset = client.assets.create(method="direct", file=fh)
+
+        kwargs = {
+            "model_name": model_name,
+            "video": VideoContext_AssetId(asset_id=asset.id),
+            "prompt": prompt,
+            "max_tokens": max_tokens,
+        }
+        if start_time is not None:
+            kwargs["start_time"] = start_time
+        if end_time is not None:
+            kwargs["end_time"] = end_time
+        response = client.analyze(**kwargs)
+        return response.data
+
+
 def extract_answer(message: dict) -> str | None:
     """
     Extract the plain-text answer from an assistant message that may include

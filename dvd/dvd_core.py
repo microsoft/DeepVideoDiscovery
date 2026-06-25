@@ -5,7 +5,8 @@ from typing import Literal as L
 
 import dvd.config as config
 from dvd.build_database import (clip_search_tool, frame_inspect_tool,
-                                global_browse_tool, init_single_video_db)
+                                global_browse_tool, init_single_video_db,
+                                pegasus_video_qa_tool)
 from dvd.func_call_shema import as_json_schema
 from dvd.func_call_shema import doc as D
 from dvd.utils import call_openai_model_with_tools
@@ -29,6 +30,10 @@ class DVDCoreAgent:
         self.tools = [frame_inspect_tool, clip_search_tool, global_browse_tool, finish]
         if config.LITE_MODE:
             self.tools.remove(frame_inspect_tool)
+        # Opt-in: native long-video QA via TwelveLabs Pegasus. Needs the raw video
+        # pixels, so it is only added in non-LITE mode when a key is configured.
+        elif getattr(config, "USE_TWELVELABS_PEGASUS", False):
+            self.tools.insert(1, pegasus_video_qa_tool)
         self.name_to_function_map = {tool.__name__: tool for tool in self.tools}
         self.function_schemas = [
             {"function": as_json_schema(func), "type": "function"}

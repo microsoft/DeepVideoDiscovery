@@ -62,6 +62,13 @@ The core design of DVD includes:
    pip install gradio
    ```
 
+4. (Optional) **Enable the TwelveLabs Pegasus video-QA tool:**
+   ```bash
+   pip install "twelvelabs>=1.2.8"
+   export TWELVELABS_API_KEY=<your-key>
+   ```
+   See [TwelveLabs Pegasus tool (optional)](#twelvelabs-pegasus-tool-optional) below.
+
 ## Usage
 
 Note: Set up your configuration by updating the variables in  `config.py`.
@@ -73,6 +80,34 @@ The `local_run.py` script provides an example of how to run the Deep Video Disco
     ```bash
     python local_run.py https://www.youtube.com/watch?v=PQFQ-3d2J-8 "what did the main speaker talk about in the last part of video?"
     ```
+
+## TwelveLabs Pegasus tool (optional)
+
+DVD can optionally use [TwelveLabs Pegasus](https://twelvelabs.io), a native
+long-video understanding model, as an additional agent tool. Where
+`frame_inspect_tool` samples a handful of still frames and asks a VLM about
+them, `pegasus_video_qa_tool` sends the actual video segment to Pegasus, which
+analyzes the pixels server-side (motion, ordering of events, fine detail between
+frames) and returns a textual answer. This is well suited to DVD's deep-research
+QA loop over long videos.
+
+The tool is fully opt-in and non-breaking:
+
+- It is only registered when running in **non-LITE mode** (it needs the
+  downloaded video pixels) **and** `TWELVELABS_API_KEY` is set.
+- When unset, behavior is identical to before.
+
+Setup:
+
+```bash
+pip install "twelvelabs>=1.2.8"
+export TWELVELABS_API_KEY=<your-key>
+```
+
+Relevant settings live in `dvd/config.py`
+(`USE_TWELVELABS_PEGASUS`, `TWELVELABS_PEGASUS_MODEL_NAME`,
+`TWELVELABS_PEGASUS_MAX_TOKENS`). You can grab a free API key at
+[twelvelabs.io](https://twelvelabs.io) — there's a generous free tier.
 
 ## TODO
 
